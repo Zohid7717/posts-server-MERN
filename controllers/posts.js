@@ -38,6 +38,60 @@ export const createPost = async (req, res) => {
     })
     res.json(newPostWithoutImage)
   } catch (error) {
-    res.json({'Что-то пошло не так.'})
+    res.json({message: 'Что-то пошло не так.'})
+  }
+}
+
+// Get All Posts
+export const getAll = async (req, res) => {
+  try {
+    const posts = await Post.find().sort('-createdAt')
+    const popularPosts = await Post.find().limit(5).sort('-views')
+    if (!posts) {
+      return res.json({message: 'Постов нет'})
+    }
+    res.json({posts, popularPosts})
+  } catch (error) {
+    res.json({message: 'Что-то пошло не так.'})
+  }
+}
+
+// Get Posts by id
+export const getById = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(req.params.id, {
+      $inc: {views: 1},
+    })
+    res.json(post)
+  } catch (error) {
+    res.json({message: 'Что-то пошло не так.'})
+  }
+}
+// Get My Posts
+export const getMyPosts = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId)
+    const list = await Promise.all(
+      user.posts.map((post) => {
+        return Post.findById(post._id)
+      })
+    )
+    res.json(list)
+  } catch (error) {
+    res.json({message: 'Что-то пошло не так.'})
+  }
+}
+
+//Remove Post
+export const removePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id)
+    if (!post) return res.json({ message: 'Такого поста не существует.' })
+    await User.findByIdAndUpdate(req.userId, {
+      $pull: {posts: req.params.id}
+    })
+    res.json({message: 'Пост был удален.'})
+  } catch (error) {
+    res.json({message: 'Что-то пошло не так.'})
   }
 }
