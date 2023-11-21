@@ -68,6 +68,7 @@ export const getById = async (req, res) => {
     res.json({ message: 'Что-то пошло не так.' })
   }
 }
+
 // Get My Posts
 export const getMyPosts = async (req, res) => {
   try {
@@ -96,6 +97,7 @@ export const removePost = async (req, res) => {
     res.json({ message: 'Что-то пошло не так.' })
   }
 }
+
 //Update Post
 export const updatePost = async (req, res) => {
   try {
