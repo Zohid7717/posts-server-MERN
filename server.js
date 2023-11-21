@@ -1,11 +1,12 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import { config } from 'dotenv'
 import cors from 'cors'
+import { config } from 'dotenv'
 import fileUpload from 'express-fileupload'
 
 import authRoute from './routes/auth.js'
 import postRoute from './routes/posts.js'
+import commentRoute from './routes/comments.js'
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.use(express.static('uploads'))
 //Routes
 app.use('/api/auth', authRoute)
 app.use('/api/posts', postRoute)
+app.use('/api/comments', commentRoute)
 
 async function start() {
   try {
